@@ -1,10 +1,13 @@
 
 const {isNumber} = require('core-util-is')
+const spawn = require('cross-spawn')
 const {format} = require('util')
 const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const tmp = require('tmp')
+const once = require('once')
+const debug = require('util').debuglog('gaea-scripts')
 
 // fail(1, 'with exit code')
 // fail('foo %s', 'bar')
@@ -24,7 +27,7 @@ exports.fail = (code, ...args) => {
   process.exit(code)
 }
 
-const error = (Ctor, ...args) => {
+const error = exports.error = (Ctor, ...args) => {
   if (!(Ctor.prototype instanceof Error)) {
     args.unshift(Ctor)
     Ctor = Error
@@ -32,8 +35,6 @@ const error = (Ctor, ...args) => {
 
   return new Ctor(format(...args))
 }
-
-exports.error = error
 
 exports.throws = (...args) => {
   throw error(...args)
@@ -50,7 +51,7 @@ exports.testFiles = (files, cwd) => files
   try {
     fs.accessSync(filepath, fs.constants.R_OK)
     return true
-  } catch (error) {
+  } catch (_) {
     return false
   }
 })
@@ -66,3 +67,31 @@ exports.getTempDir = () => new Promise((resolve, reject) => {
     resolve(dir)
   })
 })
+
+exports.spawn = (command, args, cwd = process.cwd()) =>
+  new Promise((resolve, reject) => {
+    const args_string = args.length
+      ? ` ${args.join(' ')}`
+      : ''
+
+    const c = command + args_string
+
+    debug('run command: %s', c)
+
+    const child = spawn(command, args, {
+      stdio: 'inherit',
+      cwd
+    })
+
+    reject = once(reject)
+
+    child.on('error', reject)
+
+    child.on('close', code => {
+      if (!code) {
+        return resolve()
+      }
+
+      reject(error('command `%s` exit with code %s', c, code))
+    })
+  })

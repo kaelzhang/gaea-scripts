@@ -5,9 +5,10 @@ const Ignore = require('ignore')
 const fse = require('fs-extra')
 const {isArray} = require('core-util-is')
 const debug = require('util').debuglog('gaea-scripts')
-const spawn = require('cross-spawn')
 
-const {testFiles, getTempDir, throws} = require('./util')
+const {
+  testFiles, getTempDir, throws, spawn
+} = require('./util')
 const config = require('./config')
 
 const IGNORE_FILES = [
@@ -247,14 +248,7 @@ const packThen = async command => {
 
   debug('npm %s', args.join(' '))
 
-  const child = spawn('npm', args, {
-    stdio: 'inherit',
-    cwd: dir
-  })
-
-  child.on('close', code => {
-    throws('command %s exit with non-zero code', command)
-  })
+  await spawn('npm', args, dir)
 }
 
 module.exports = {

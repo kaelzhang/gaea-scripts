@@ -1,6 +1,6 @@
 {
   "name": "gaea-scripts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Command line toolkit for gaea",
   "bin": {
     "gaea-publish": "bin/publish.js",
@@ -54,6 +54,7 @@
     "glob-gitignore": "^1.0.10",
     "ignore": "^5.0.2",
     "minimist": "^1.2.0",
+    "once": "^1.4.0",
     "skema": "^9.3.7",
     "tmp": "0.0.33"
   }
