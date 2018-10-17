@@ -1,7 +1,9 @@
+
 const {isString} = require('core-util-is')
 const {format} = require('util')
 const fs = require('fs')
 const path = require('path')
+const chalk = require('chalk')
 
 exports.fail = (code, ...args) => {
   let message
@@ -18,6 +20,9 @@ exports.fail = (code, ...args) => {
   process.exit(code)
 }
 
+exports.log = (...args) => {
+  console.log(format(...args))
+}
 
 exports.testFiles = (files, cwd) => {
   return files

@@ -3,7 +3,11 @@
   "version": "0.0.2",
   "description": "Command line toolkit for gaea",
   "bin": {
-    "gaea-publish": "bin/publish.js"
+    "gaea-publish": "bin/publish.js",
+    "gaea-dev": "bin/dev.js",
+    "gaea-start": "bin/start.js",
+    "gaea-pack": "bin/pack.js",
+    "gaea-docker": "bin/docker.js"
   },
   "scripts": {
     "test": "nyc ava --timeout=10s",
@@ -42,6 +46,7 @@
     "eslint": "^5.1.0"
   },
   "dependencies": {
+    "@ostai/env": "^1.0.0",
     "chalk": "^2.4.1",
     "core-util-is": "^1.0.2",
     "cross-spawn": "^6.0.5",

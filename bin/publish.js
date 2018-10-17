@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const minimist = require('minimist')
+// Publish gaea puppet
+
 const tmp = require('tmp')
 const spawn = require('cross-spawn')
-const {shape, any} = require('skema')
 const path = require('path')
 const fs = require('fs')
 const {glob, hasMagic} = require('glob-gitignore')
@@ -12,7 +12,7 @@ const fse = require('fs-extra')
 const {isArray} = require('core-util-is')
 const debug = require('util').debuglog('gaea-publish')
 
-const {fail, testFiles} = require('./_util')
+const {fail, testFiles} = require('./lib/util')
 
 const IGNORE_FILES = [
   '.npmignore',
@@ -35,7 +35,9 @@ const LICENSE_FILES = [
 
 const CHANGELOG_FILES = [
   'CHANGELOG',
-  'CHANGELOG.md'
+  'CHANGELOG.md',
+  'HISTORY',
+  'HISTORY.md'
 ]
 
 const ALWAYS_IGNORES = [
@@ -59,36 +61,6 @@ const GAEA = 'gaea'
 const REGEX_IS_DIR = /\/+$/
 
 const isFile = filepath => !REGEX_IS_DIR.test(filepath)
-
-const argv = minimist(process.argv.slice(2))
-const Options = shape({
-  cwd: {
-    default () {
-      return process.cwd()
-    },
-
-    set (cwd) {
-      return path.resolve(cwd)
-    }
-  },
-
-  debug: {
-    default: false
-  },
-
-  pkg: {
-    default: null,
-    set () {
-      try {
-        return require(path.join(this.parent.cwd, 'package.json'))
-      } catch (e) {
-        return fail('fails to read package.json: %s', e.stack || e.message)
-      }
-    }
-  },
-
-  _: any()
-})
 
 const options = Options.from(argv)
 
@@ -246,7 +218,7 @@ const writePackage = (pkg, to) => {
   debug('package.json: %s', package_string)
 }
 
-tmp.dir(async (err, dir, clean) => {
+tmp.dir(async (err, dir) => {
   if (err) {
     return fail('fails to create tmp dir: %s', err.stack || err.message)
   }
@@ -263,7 +235,7 @@ tmp.dir(async (err, dir, clean) => {
   await copyFiles(cwd, dir, files)
   writePackage(pkg, dir)
 
-  const args = ['pack'].concat(options._)
+  const args = ['publish'].concat(options._)
 
   debug('npm %s', args.join(' '))
 
