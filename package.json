@@ -1,8 +1,10 @@
 {
   "name": "gaea-cli",
-  "version": "1.0.0",
-  "description": "gaea-cli",
-  "main": "src/index.js",
+  "version": "0.0.1",
+  "description": "Command line toolkit for gaea",
+  "bin": {
+    "gaea-publish": "bin/publish.js"
+  },
   "scripts": {
     "test": "nyc ava --timeout=10s",
     "test-no-report": "NODE_DEBUG=gaea-cli nyc ava --timeout=10s --verbose",
@@ -10,14 +12,15 @@
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "files": [
-    "src/"
+    "bin/"
   ],
   "repository": {
     "type": "git",
     "url": "git://github.com/kaelzhang/gaea-cli.git"
   },
   "keywords": [
-    "gaea-cli"
+    "gaea-cli",
+    "gaea"
   ],
   "engines": {
     "node": ">= 6"
@@ -37,5 +40,16 @@
     "eslint-config-ostai": "^1.1.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint": "^5.1.0"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "core-util-is": "^1.0.2",
+    "cross-spawn": "^6.0.5",
+    "fs-extra": "^7.0.0",
+    "glob-gitignore": "^1.0.10",
+    "ignore": "^5.0.2",
+    "minimist": "^1.2.0",
+    "skema": "^9.3.7",
+    "tmp": "0.0.33"
   }
 }
