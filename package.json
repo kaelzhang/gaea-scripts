@@ -1,5 +1,5 @@
 {
-  "name": "gaea-cli",
+  "name": "gaea-scripts",
   "version": "0.0.1",
   "description": "Command line toolkit for gaea",
   "bin": {
@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "nyc ava --timeout=10s",
-    "test-no-report": "NODE_DEBUG=gaea-cli nyc ava --timeout=10s --verbose",
+    "test-no-report": "NODE_DEBUG=gaea-scripts nyc ava --timeout=10s --verbose",
     "lint": "eslint .",
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
@@ -16,10 +16,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/kaelzhang/gaea-cli.git"
+    "url": "git://github.com/kaelzhang/gaea-scripts.git"
   },
   "keywords": [
-    "gaea-cli",
+    "gaea-scripts",
     "gaea"
   ],
   "engines": {
@@ -31,7 +31,7 @@
   "author": "kaelzhang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kaelzhang/gaea-cli/issues"
+    "url": "https://github.com/kaelzhang/gaea-scripts/issues"
   },
   "devDependencies": {
     "ava": ">= 1.0.0-beta.6",

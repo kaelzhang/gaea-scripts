@@ -10,7 +10,7 @@ const {glob} = require('glob-gitignore')
 const Ignore = require('ignore')
 const fse = require('fs-extra')
 const {isArray} = require('core-util-is')
-const debug = require('util').debuglog('GAEA_PUBLISH')
+const debug = require('util').debuglog('gaea-publish')
 
 const {fail, testFiles} = require('./_util')
 
