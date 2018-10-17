@@ -1,14 +1,14 @@
 const {log} = require('./util')
 
-module.exports = (gaea, service, env) => {
-  if (env) {
-    Object.assign(process.env, env)
+module.exports = (gaea, gaeaConfig, dev) => {
+  if (dev) {
+    Object.assign(process.env, gaeaConfig.dev.env)
   }
 
   const {
     port,
     root
-  } = service
+  } = gaeaConfig.service
 
   log('server started at port %s', port)
 

@@ -2,15 +2,16 @@
 
 // Start a gaea server
 
-const {
-  argv,
-  config
-} = require('../src/config').get(true)
-
 const start = require('../src/start')
+const {fail} = require('../src/util')
 
-start(require(config.cwd), config.gaea.service)
-
-// console.log(argv, config.cwd, config.debug, config.pkg, config.gaea)
-// console.log(config.gaea.service.root, config.gaea.service.port)
-// console.log(config.gaea.docker.name)
+require('../src/config').get(true)
+.then(({
+  config: {
+    cwd,
+    gaea
+  }
+}) => {
+  start(require(cwd), gaea)
+})
+.catch(fail)

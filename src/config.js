@@ -3,7 +3,7 @@ const {shape} = require('skema')
 const minimist = require('minimist')
 const {isString, isNumber} = require('core-util-is')
 
-const {fail, testFiles} = require('./util')
+const {throws, testFiles} = require('./util')
 
 const GaeaConfig = shape({
   dev: shape({
@@ -14,7 +14,7 @@ const GaeaConfig = shape({
     root: {
       set (root, cwd) {
         if (!isString(root)) {
-          return fail('service.root must be a path')
+          throws(TypeError, 'service.root must be a path')
         }
 
         return path.resolve(cwd, root)
@@ -24,8 +24,7 @@ const GaeaConfig = shape({
     port: {
       validate (port) {
         if (!isNumber(port)) {
-          fail('service.port must be a number')
-          return
+          throws(TypeError, 'service.port must be a number')
         }
 
         return true
@@ -64,7 +63,7 @@ const Config = shape({
       try {
         return require(path.join(this.parent.cwd, 'package.json'))
       } catch (e) {
-        return fail('fails to read package.json: %s', e.stack || e.message)
+        throws('fails to read package.json: %s', e.stack || e.message)
       }
     }
   },
@@ -80,7 +79,7 @@ const Config = shape({
       }
 
       if (gaeaConfigRequired) {
-        return fail('.gaearc.js is not found')
+        throws('.gaearc.js is not found')
       }
 
       return null
@@ -88,17 +87,17 @@ const Config = shape({
   }
 })
 
-const get = gaeaConfigRequired => {
+const config = async (options, gaeaConfigRequired) =>
+  Config.from(options, [gaeaConfigRequired])
+
+const get = async gaeaConfigRequired => {
   const argv = minimist(process.argv.slice(2))
 
   return {
     argv,
-    config: config(argv, gaeaConfigRequired)
+    config: await config(argv, gaeaConfigRequired)
   }
 }
-
-const config = (options, gaeaConfigRequired) =>
-  Config.from(options, [gaeaConfigRequired])
 
 module.exports = {
   get,
