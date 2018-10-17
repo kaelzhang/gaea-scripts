@@ -4,6 +4,7 @@ const {format} = require('util')
 const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
+const tmp = require('tmp')
 
 // fail(1, 'with exit code')
 // fail('foo %s', 'bar')
@@ -23,13 +24,19 @@ exports.fail = (code, ...args) => {
   process.exit(code)
 }
 
-exports.throws = (Ctor, ...args) => {
+const error = (Ctor, ...args) => {
   if (!(Ctor.prototype instanceof Error)) {
     args.unshift(Ctor)
     Ctor = Error
   }
 
-  throw new Ctor(format(...args))
+  return new Ctor(format(...args))
+}
+
+exports.error = error
+
+exports.throws = (...args) => {
+  throw error(...args)
 }
 
 exports.log = (...args) => {
@@ -46,4 +53,16 @@ exports.testFiles = (files, cwd) => files
   } catch (error) {
     return false
   }
+})
+
+exports.getTempDir = () => new Promise((resolve, reject) => {
+  tmp.dir((err, dir) => {
+    if (err) {
+      return reject(
+        error('fails to create tmp dir: %s', err.stack || err.message)
+      )
+    }
+
+    resolve(dir)
+  })
 })
