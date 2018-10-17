@@ -1,7 +1,8 @@
 {
   "name": "gaea-scripts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Command line toolkit for gaea",
+  "main": "index.js",
   "bin": {
     "gaea-publish": "bin/publish.js",
     "gaea-dev": "bin/dev.js",
@@ -16,7 +17,8 @@
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "files": [
-    "bin/"
+    "bin/",
+    "src"
   ],
   "repository": {
     "type": "git",
