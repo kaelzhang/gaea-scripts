@@ -6,7 +6,7 @@ const spawn = require('cross-spawn')
 const {shape, any} = require('skema')
 const path = require('path')
 const fs = require('fs')
-const {glob} = require('glob-gitignore')
+const {glob, hasMagic} = require('glob-gitignore')
 const Ignore = require('ignore')
 const fse = require('fs-extra')
 const {isArray} = require('core-util-is')
@@ -54,7 +54,11 @@ const ALWAYS_IGNORES = [
   'node_modules'
 ]
 
+const EMPTY = ''
 const GAEA = 'gaea'
+const REGEX_IS_DIR = /\/+$/
+
+const isFile = filepath => !REGEX_IS_DIR.test(filepath)
 
 const argv = minimist(process.argv.slice(2))
 const Options = shape({
@@ -93,10 +97,33 @@ const getFilesByFiles = async (files, cwd) => {
     return fail('gaea.files must be an array')
   }
 
-  return glob(files, {
+  const patterns = []
+  const found = []
+
+  files.forEach(file => {
+    if (hasMagic(file)) {
+      patterns.push(file)
+      return
+    }
+
+    if (REGEX_IS_DIR.test(file)) {
+      found.push(file.replace(REGEX_IS_DIR, EMPTY))
+      return
+    }
+
+    found.push(file)
+  })
+
+  if (!patterns.length) {
+    return found
+  }
+
+  const globbed = await glob(patterns, {
     cwd,
     marked: true
   })
+
+  return found.concat(globbed)
 }
 
 const getFilesByIgnore = cwd => {
@@ -124,7 +151,17 @@ const testAndAddFile = (filesToTest, files, cwd) => {
   }
 }
 
-const isFile = filepath => !/\/$/.test(filepath)
+const checkMain = (files, pkg, cwd) => {
+  const main = pkg.main
+  const filesToTest = []
+
+  if (main) {
+    filesToTest.push(main)
+    filesToTest.push(`${main}.js`)
+  }
+
+  testAndAddFile(filesToTest, files, cwd)
+}
 
 const getFilesToPack = async (pkg, cwd) => {
   const gaea = pkg.gaea || {}
@@ -136,6 +173,8 @@ const getFilesToPack = async (pkg, cwd) => {
   testAndAddFile(README_FILES, files, cwd)
   testAndAddFile(LICENSE_FILES, files, cwd)
   testAndAddFile(CHANGELOG_FILES, files, cwd)
+
+  checkMain(files, pkg, cwd)
 
   return files.filter(isFile)
 }
@@ -186,11 +225,16 @@ const createDependencies = (
 const writePackage = (pkg, to) => {
   const {
     dependencies = {},
+    files,
     gaea,
     ...cleaned
   } = pkg
 
   cleaned.dependencies = createDependencies(dependencies, gaea.dependencies)
+
+  if (gaea.files) {
+    cleaned.files = gaea.files
+  }
 
   const package_string = JSON.stringify(cleaned, null, 2)
 
@@ -224,6 +268,7 @@ tmp.dir(async (err, dir, clean) => {
   debug('npm %s', args.join(' '))
 
   const child = spawn('npm', args, {
-    stdio: 'inherit'
+    stdio: 'inherit',
+    cwd: dir
   })
 })
