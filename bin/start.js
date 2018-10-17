@@ -2,7 +2,7 @@
 
 // Start a gaea server
 
-const start = require('../src/start')
+const {start} = require('../src/start')
 const {fail} = require('../src/util')
 
 require('../src/config').get(true)

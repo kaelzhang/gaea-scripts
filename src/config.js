@@ -53,10 +53,6 @@ const Config = shape({
     }
   },
 
-  debug: {
-    default: false
-  },
-
   pkg: {
     default: null,
     set () {

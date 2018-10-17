@@ -249,6 +249,11 @@ const packThen = async command => {
   debug('npm %s', args.join(' '))
 
   await spawn('npm', args, dir)
+
+  return {
+    pkg,
+    dir
+  }
 }
 
 module.exports = {

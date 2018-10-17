@@ -1,6 +1,7 @@
 const {log} = require('./util')
+const config = require('./config')
 
-module.exports = (gaea, gaeaConfig, dev) => {
+const start = (gaea, gaeaConfig, dev) => {
   if (dev) {
     Object.assign(process.env, gaeaConfig.dev.env)
   }
@@ -13,4 +14,17 @@ module.exports = (gaea, gaeaConfig, dev) => {
   log('server started at port %s', port)
 
   gaea.server(root).listen(port)
+}
+
+const startDevAt = async (g, cwd) => {
+  const {
+    gaea
+  } = await config.config({cwd}, true)
+
+  start(g, gaea, true)
+}
+
+module.exports = {
+  start,
+  startDevAt
 }
