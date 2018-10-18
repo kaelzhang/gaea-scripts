@@ -95,3 +95,14 @@ exports.spawn = (command, args, cwd = process.cwd()) =>
       reject(error('command `%s` exit with code %s', c, code))
     })
   })
+
+const normalizeName = name => name.replace(/^@/, '').replace(/\//, '-')
+
+exports.createPackName = pkg => {
+  const {
+    version,
+    name
+  } = pkg
+
+  return `${normalizeName(name)}-${version}.tgz`
+}

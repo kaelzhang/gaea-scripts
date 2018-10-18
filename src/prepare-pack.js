@@ -252,7 +252,8 @@ const packThen = async command => {
 
   return {
     pkg,
-    dir
+    dir,
+    cwd
   }
 }
 
