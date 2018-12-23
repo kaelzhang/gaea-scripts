@@ -22,6 +22,6 @@ require('../src/config').get(true)
 
   const args = ['build', '-t', `${docker.name}:${pkg.version}`, '.']
 
-  return spawn('docker', args, cwd)
+  return spawn('docker', args, {cwd})
 })
 .catch(fail)

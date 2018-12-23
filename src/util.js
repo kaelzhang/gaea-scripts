@@ -68,7 +68,10 @@ exports.getTempDir = () => new Promise((resolve, reject) => {
   })
 })
 
-exports.spawn = (command, args, cwd = process.cwd()) =>
+exports.spawn = (command, args, {
+  cwd = process.cwd(),
+  env = process.env
+} = {}) =>
   new Promise((resolve, reject) => {
     const args_string = args.length
       ? ` ${args.join(' ')}`
@@ -80,7 +83,8 @@ exports.spawn = (command, args, cwd = process.cwd()) =>
 
     const child = spawn(command, args, {
       stdio: 'inherit',
-      cwd
+      cwd,
+      env: env || {}
     })
 
     reject = once(reject)
@@ -92,7 +96,10 @@ exports.spawn = (command, args, cwd = process.cwd()) =>
         return resolve()
       }
 
-      reject(error('command `%s` exit with code %s', c, code))
+      const err = error('command `%s` exit with code %s', c, code)
+      err.code = code
+
+      reject(err)
     })
   })
 
@@ -105,4 +112,15 @@ exports.createPackName = pkg => {
   } = pkg
 
   return `${normalizeName(name)}-${version}.tgz`
+}
+
+exports.requirePath = p => {
+  try {
+    return require(p)
+  } catch (e) {
+    const err = new Error(`fails to require "${p}": ${e.message}`)
+    err.stack = e.stack
+
+    throw err
+  }
 }
