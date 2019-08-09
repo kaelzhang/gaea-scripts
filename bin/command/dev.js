@@ -9,9 +9,9 @@ require('../src/config').get(true)
 .then(({
   config: {
     cwd,
-    gaea
+    gaia
   }
 }) => {
-  start(require(cwd), gaea, true)
+  start(require(cwd), gaia, true)
 })
 .catch(fail)

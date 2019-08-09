@@ -7,7 +7,7 @@ const path = require('path')
 const chalk = require('chalk')
 const tmp = require('tmp')
 const once = require('once')
-const debug = require('util').debuglog('gaea-scripts')
+const debug = require('util').debuglog('@gaia/cli')
 
 // fail(1, 'with exit code')
 // fail('foo %s', 'bar')

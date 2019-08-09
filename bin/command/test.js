@@ -16,7 +16,7 @@ const run = async () => {
     },
     config: {
       cwd,
-      gaea
+      gaia
     }
   } = await config.get(true)
 

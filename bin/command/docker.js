@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Docker build a gaea server
+// Docker build a gaia server
 
 // docker build -t ost.ai/member-service:`node -e "console.log(require('./package.json').version)" 2> /dev/null` .
 
@@ -11,13 +11,13 @@ require('../src/config').get(true)
   config: {
     cwd,
     pkg,
-    gaea: {
+    gaia: {
       docker
     }
   }
 }) => {
   if (!docker) {
-    return fail('docker field is required in .gaearc.js')
+    return fail('docker field is required in .gaiarc.js')
   }
 
   const args = ['build', '-t', `${docker.name}:${pkg.version}`, '.']

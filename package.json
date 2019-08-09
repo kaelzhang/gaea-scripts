@@ -1,19 +1,14 @@
 {
-  "name": "gaea-scripts",
+  "name": "@gaia/cli",
   "version": "1.3.0",
-  "description": "Command line toolkit for gaea",
-  "main": "index.js",
+  "description": "Command line toolkit for gaia",
+  "main": "./src",
   "bin": {
-    "gaea-publish": "bin/publish.js",
-    "gaea-dev": "bin/dev.js",
-    "gaea-start": "bin/start.js",
-    "gaea-pack": "bin/pack.js",
-    "gaea-docker": "bin/docker.js",
-    "gaea-test": "bin/test.js"
+    "gaia": "bin/index.js"
   },
   "scripts": {
     "test": "nyc ava --timeout=10s",
-    "test-no-report": "NODE_DEBUG=gaea-scripts nyc ava --timeout=10s --verbose",
+    "test-no-report": "NODE_DEBUG=@gaia/cli nyc ava --timeout=10s --verbose",
     "lint": "eslint .",
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
@@ -23,12 +18,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/kaelzhang/gaea-scripts.git"
+    "url": "git://github.com/kaelzhang/@gaia/cli.git"
   },
   "keywords": [
-    "gaea-scripts",
-    "gaea-cli",
-    "gaea"
+    "@gaia/cli",
+    "gaia-cli",
+    "gaia"
   ],
   "engines": {
     "node": ">= 6"
@@ -39,7 +34,7 @@
   "author": "kaelzhang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kaelzhang/gaea-scripts/issues"
+    "url": "https://github.com/kaelzhang/@gaia/cli/issues"
   },
   "devDependencies": {
     "ava": "^2.2.0",

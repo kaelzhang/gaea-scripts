@@ -4,7 +4,7 @@ const {glob, hasMagic} = require('glob-gitignore')
 const Ignore = require('ignore')
 const fse = require('fs-extra')
 const {isArray} = require('core-util-is')
-const debug = require('util').debuglog('gaea-scripts')
+const debug = require('util').debuglog('@gaia/cli')
 
 const {
   testFiles, getTempDir, throws, spawn
@@ -54,14 +54,14 @@ const ALWAYS_IGNORES = [
 ]
 
 const EMPTY = ''
-const GAEA = 'gaea'
+const GAEA = 'gaia'
 const REGEX_IS_DIR = /\/+$/
 
 const isFile = filepath => !REGEX_IS_DIR.test(filepath)
 
 const getFilesByFiles = async (files, cwd) => {
   if (!isArray(files)) {
-    return throws('gaea.files must be an array')
+    return throws('gaia.files must be an array')
   }
 
   const patterns = []
@@ -131,10 +131,10 @@ const checkMain = (files, pkg, cwd) => {
 }
 
 const getFilesToPack = async (pkg, cwd) => {
-  const gaea = pkg.gaea || {}
+  const gaia = pkg.gaia || {}
 
-  const files = gaea.files
-    ? await getFilesByFiles(gaea.files, cwd)
+  const files = gaia.files
+    ? await getFilesByFiles(gaia.files, cwd)
     : await getFilesByIgnore(cwd)
 
   testAndAddFile(README_FILES, files, cwd)
@@ -156,25 +156,25 @@ const copyFiles = (from, to, files) => {
 }
 
 const createDependencies = (
-  original_dependencies, gaea_dependencies
+  original_dependencies, gaia_dependencies
 ) => {
   const new_dependencies = {}
 
   if (!(GAEA in original_dependencies)) {
-    return throws('gaea must be npm installed')
+    return throws('gaia must be npm installed')
   }
 
-  new_dependencies.gaea = original_dependencies.gaea
+  new_dependencies.gaia = original_dependencies.gaia
 
-  if (!gaea_dependencies) {
+  if (!gaia_dependencies) {
     return new_dependencies
   }
 
-  if (!isArray(gaea_dependencies)) {
-    return throws('gaea.dependencies must be an array')
+  if (!isArray(gaia_dependencies)) {
+    return throws('gaia.dependencies must be an array')
   }
 
-  gaea_dependencies.forEach(dep => {
+  gaia_dependencies.forEach(dep => {
     if (dep === GAEA) {
       return
     }
@@ -186,21 +186,21 @@ const createDependencies = (
     new_dependencies[dep] = original_dependencies[dep]
   })
 
-  return gaea_dependencies
+  return gaia_dependencies
 }
 
 const writePackage = (pkg, to) => {
   const {
     dependencies = {},
     files,
-    gaea,
+    gaia,
     ...cleaned
   } = pkg
 
-  cleaned.dependencies = createDependencies(dependencies, gaea.dependencies)
+  cleaned.dependencies = createDependencies(dependencies, gaia.dependencies)
 
-  if (gaea.files) {
-    cleaned.files = gaea.files
+  if (gaia.files) {
+    cleaned.files = gaia.files
   }
 
   const package_string = JSON.stringify(cleaned, null, 2)

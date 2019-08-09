@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Start a gaea server
+// Start a gaia server
 
 const {start} = require('../src/start')
 const {fail} = require('../src/util')
@@ -9,9 +9,9 @@ require('../src/config').get(true)
 .then(({
   config: {
     cwd,
-    gaea
+    gaia
   }
 }) => {
-  start(require(cwd), gaea)
+  start(require(cwd), gaia)
 })
 .catch(fail)

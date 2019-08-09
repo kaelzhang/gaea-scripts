@@ -5,7 +5,7 @@ const {isString, isNumber} = require('core-util-is')
 
 const {throws, testFiles} = require('./util')
 
-const GaeaConfig = shape({
+const GaiaConfig = shape({
   dev: shape({
     env: Object
   }),
@@ -64,18 +64,18 @@ const Config = shape({
     }
   },
 
-  gaea: {
+  gaia: {
     default: null,
-    set (_, gaeaConfigRequired) {
+    set (_, gaiaConfigRequired) {
       const {cwd} = this.parent
-      const gaearcFile = testFiles(['.gaearc.js'], cwd)
+      const gaiarcFile = testFiles(['.gaiarc.js'], cwd)
 
-      if (gaearcFile) {
-        return GaeaConfig.from(require(path.join(cwd, gaearcFile)), [cwd])
+      if (gaiarcFile) {
+        return GaiaConfig.from(require(path.join(cwd, gaiarcFile)), [cwd])
       }
 
-      if (gaeaConfigRequired) {
-        throws('.gaearc.js is not found')
+      if (gaiaConfigRequired) {
+        throws('.gaiarc.js is not found')
       }
 
       return null
@@ -83,15 +83,15 @@ const Config = shape({
   }
 })
 
-const config = async (options, gaeaConfigRequired) =>
-  Config.from(options, [gaeaConfigRequired])
+const config = async (options, gaiaConfigRequired) =>
+  Config.from(options, [gaiaConfigRequired])
 
-const get = async gaeaConfigRequired => {
+const get = async gaiaConfigRequired => {
   const argv = minimist(process.argv.slice(2))
 
   return {
     argv,
-    config: await config(argv, gaeaConfigRequired)
+    config: await config(argv, gaiaConfigRequired)
   }
 }
 

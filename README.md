@@ -1,32 +1,32 @@
-[![Build Status](https://travis-ci.org/kaelzhang/gaea-scripts.svg?branch=master)](https://travis-ci.org/kaelzhang/gaea-scripts)
-[![Coverage](https://codecov.io/gh/kaelzhang/gaea-scripts/branch/master/graph/badge.svg)](https://codecov.io/gh/kaelzhang/gaea-scripts)
+[![Build Status](https://travis-ci.org/kaelzhang/@gaia/cli.svg?branch=master)](https://travis-ci.org/kaelzhang/@gaia/cli)
+[![Coverage](https://codecov.io/gh/kaelzhang/@gaia/cli/branch/master/graph/badge.svg)](https://codecov.io/gh/kaelzhang/@gaia/cli)
 <!-- optional appveyor tst
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kaelzhang/gaea-scripts?branch=master&svg=true)](https://ci.appveyor.com/project/kaelzhang/gaea-scripts)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kaelzhang/@gaia/cli?branch=master&svg=true)](https://ci.appveyor.com/project/kaelzhang/@gaia/cli)
 -->
 <!-- optional npm version
-[![NPM version](https://badge.fury.io/js/gaea-scripts.svg)](http://badge.fury.io/js/gaea-scripts)
+[![NPM version](https://badge.fury.io/js/@gaia/cli.svg)](http://badge.fury.io/js/@gaia/cli)
 -->
 <!-- optional npm downloads
-[![npm module downloads per month](http://img.shields.io/npm/dm/gaea-scripts.svg)](https://www.npmjs.org/package/gaea-scripts)
+[![npm module downloads per month](http://img.shields.io/npm/dm/@gaia/cli.svg)](https://www.npmjs.org/package/@gaia/cli)
 -->
 <!-- optional dependency status
-[![Dependency Status](https://david-dm.org/kaelzhang/gaea-scripts.svg)](https://david-dm.org/kaelzhang/gaea-scripts)
+[![Dependency Status](https://david-dm.org/kaelzhang/@gaia/cli.svg)](https://david-dm.org/kaelzhang/@gaia/cli)
 -->
 
-# gaea-scripts
+# @gaia/cli
 
 <!-- description -->
 
 ## Install
 
 ```sh
-$ npm i gaea-scripts
+$ npm i @gaia/cli
 ```
 
 ## Usage
 
 ```js
-import gaea_cli from 'gaea-scripts'
+import gaia_cli from '@gaia/cli'
 ```
 
 ## License

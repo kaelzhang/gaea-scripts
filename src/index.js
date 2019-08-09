@@ -1,9 +1,9 @@
 const {
   start,
   startDevAt
-} = require('./src/start')
+} = require('./start')
 
-const config = require('./src/config')
+const config = require('./config')
 
 module.exports = {
   start,
