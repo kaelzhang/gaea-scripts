@@ -15,3 +15,4 @@ require('../src/config').get(true)
   start(require(cwd), gaia)
 })
 .catch(fail)
+
