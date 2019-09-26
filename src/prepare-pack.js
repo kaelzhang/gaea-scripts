@@ -1,4 +1,4 @@
-const path = require('path')
+const {relative} = require('path')
 const fs = require('fs')
 const {glob, hasMagic} = require('glob-gitignore')
 const Ignore = require('ignore')
@@ -93,14 +93,14 @@ const getFilesByFiles = async (files, cwd) => {
   return found.concat(globbed)
 }
 
-const getFilesByIgnore = cwd => {
+const getFilesByIgnore = (cwd, patterns) => {
   const ignore = Ignore().add(ALWAYS_IGNORES)
   const ignoreFile = testFiles(IGNORE_FILES, cwd)
   if (ignoreFile) {
     ignore.add(fs.readFileSync(path.join(cwd, ignoreFile)).toString())
   }
 
-  return glob(['**'], {
+  return glob(patterns, {
     cwd,
     ignore,
     mark: true
@@ -130,12 +130,11 @@ const checkMain = (files, pkg, cwd) => {
   testAndAddFile(filesToTest, files, cwd)
 }
 
-const getFilesToPack = async (pkg, cwd) => {
-  const gaia = pkg.gaia || {}
+const getFilesToPack = async pkg => {
+  const {root, protoPath} = pkg
+  const relProtoPath = relative(root, protoPath)
 
-  const files = gaia.files
-    ? await getFilesByFiles(gaia.files, cwd)
-    : await getFilesByIgnore(cwd)
+  const files = await getFilesByIgnore(cwd, '')
 
   testAndAddFile(README_FILES, files, cwd)
   testAndAddFile(LICENSE_FILES, files, cwd)
@@ -214,12 +213,10 @@ const writePackage = (pkg, to) => {
 }
 
 
-const prepare = async ({
-  cwd,
-  pkg
-}) => {
+// - pkg `gaia/package`
+const prepare = async pkg => {
   const dir = await getTempDir()
-  const files = await getFilesToPack(pkg, cwd)
+  const files = await getFilesToPack(pkg)
 
   debug('files: %s', JSON.stringify(files, null, 2))
 

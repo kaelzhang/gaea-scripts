@@ -2,45 +2,46 @@ const path = require('path')
 const {shape} = require('skema')
 const minimist = require('minimist')
 const {isString, isNumber} = require('core-util-is')
+const readGaiaPackage = require('gaia/package')
 
 const {throws, testFiles} = require('./util')
 
-const GaiaConfig = shape({
-  dev: shape({
-    env: Object
-  }),
+// const GaiaConfig = shape({
+//   dev: shape({
+//     env: Object
+//   }),
 
-  service: shape({
-    root: {
-      set (root, cwd) {
-        if (!isString(root)) {
-          throws(TypeError, 'service.root must be a path')
-        }
+//   service: shape({
+//     root: {
+//       set (root, cwd) {
+//         if (!isString(root)) {
+//           throws(TypeError, 'service.root must be a path')
+//         }
 
-        return path.resolve(cwd, root)
-      }
-    },
+//         return path.resolve(cwd, root)
+//       }
+//     },
 
-    port: {
-      validate (port) {
-        if (!isNumber(port)) {
-          throws(TypeError, 'service.port must be a number')
-        }
+//     port: {
+//       validate (port) {
+//         if (!isNumber(port)) {
+//           throws(TypeError, 'service.port must be a number')
+//         }
 
-        return true
-      }
-    }
-  }),
+//         return true
+//       }
+//     }
+//   }),
 
-  docker: {
-    optional: true,
-    type: shape({
-      name: {
-        validate: isString
-      }
-    })
-  }
-})
+//   docker: {
+//     optional: true,
+//     type: shape({
+//       name: {
+//         validate: isString
+//       }
+//     })
+//   }
+// })
 
 const Config = shape({
   cwd: {
@@ -68,17 +69,7 @@ const Config = shape({
     default: null,
     set (_, gaiaConfigRequired) {
       const {cwd} = this.parent
-      const gaiarcFile = testFiles(['.gaiarc.js'], cwd)
-
-      if (gaiarcFile) {
-        return GaiaConfig.from(require(path.join(cwd, gaiarcFile)), [cwd])
-      }
-
-      if (gaiaConfigRequired) {
-        throws('.gaiarc.js is not found')
-      }
-
-      return null
+      return readGaiaPackage(cwd)
     }
   }
 })

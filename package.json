@@ -37,25 +37,26 @@
     "url": "https://github.com/kaelzhang/@gaia/cli/issues"
   },
   "devDependencies": {
-    "ava": "^2.2.0",
-    "codecov": "^3.5.0",
-    "eslint": "^6.1.0",
+    "ava": "^2.4.0",
+    "codecov": "^3.6.1",
+    "eslint": "^6.4.0",
     "eslint-config-ostai": "^3.0.0",
     "eslint-plugin-import": "^2.18.2",
     "nyc": "^14.1.1"
   },
   "dependencies": {
     "@ostai/env": "^1.0.0",
-    "bin-tool": "^1.4.0",
+    "bin-tool": "^2.2.2",
     "chalk": "^2.4.2",
     "core-util-is": "^1.0.2",
-    "cross-spawn": "^6.0.5",
+    "cross-spawn": "^7.0.0",
     "fs-extra": "^8.1.0",
+    "gaia": "^2.0.1",
     "glob-gitignore": "^1.0.14",
-    "ignore": "^5.1.2",
+    "ignore": "^5.1.4",
     "minimist": "^1.2.0",
     "once": "^1.4.0",
-    "skema": "^9.4.2",
+    "skema": "^9.5.1",
     "tmp": "0.1.0"
   }
 }
