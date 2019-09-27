@@ -13,12 +13,26 @@ module.exports = class StartCommand extends Command {
   constructor () {
     super()
 
-    this.options = create(true)
+    this.options = create(true, {
+      dev: {
+        type: 'boolean',
+        description: 'whether start the server in dev mode'
+      }
+    })
   }
 
-  run ({
-    argv
+  async run ({
+    argv: {
+      cwd,
+      config,
+      dev
+    }
   }) {
-    return start(argv)
+    await start({
+      cwd,
+      config: config.service,
+      port: config.port,
+      dev
+    })
   }
 }

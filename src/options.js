@@ -43,7 +43,7 @@ const {throws} = require('./error')
 
 const GAIA_CONFIG = 'gaia.config.js'
 
-const create = gaiaConfigRequired => ({
+const create = (gaiaConfigRequired, extra = {}) => ({
   cwd: {
     description: 'set the current working directory, defaults to process.cwd()',
     default () {
@@ -98,7 +98,8 @@ const create = gaiaConfigRequired => ({
         throws('ERR_LOAD_CONFIG', configFile, err.stack)
       }
     }
-  }
+  },
+  ...extra
 })
 
 module.exports = create

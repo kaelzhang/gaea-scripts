@@ -15,11 +15,19 @@ module.exports = class PackCommand extends Command {
     this.options = create()
   }
 
-  run ({
-    argv
+  async run ({
+    argv: {
+      cwd,
+      pkg,
+      _
+    }
   }) {
     prevent('gaia publish', ['run', 'publish'])
 
-    return packThen('publish')(argv)
+    await packThen('publish')({
+      cwd,
+      pkg,
+      _
+    })
   }
 }

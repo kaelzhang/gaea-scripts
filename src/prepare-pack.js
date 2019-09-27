@@ -79,17 +79,19 @@ const testAndAddFile = (filesToTest, files, cwd) => {
   }
 }
 
-const getFilesToPack = async pkg => {
-  const {root, proto_path} = pkg
-  const relProtoPath = relative(root, proto_path)
+const getFilesToPack = async ({
+  cwd,
+  protoPath
+}) => {
+  const relProtoPath = relative(cwd, protoPath)
 
   // `package.gaia.protos` is the entries of proto files but not all of them,
   // so we need to pack all proto files under protoPath
-  const files = await getFilesByIgnore(root, `${relProtoPath}/**/*.proto`)
+  const files = await getFilesByIgnore(cwd, `${relProtoPath}/**/*.proto`)
 
-  testAndAddFile(README_FILES, files, root)
-  testAndAddFile(LICENSE_FILES, files, root)
-  testAndAddFile(CHANGELOG_FILES, files, root)
+  testAndAddFile(README_FILES, files, cwd)
+  testAndAddFile(LICENSE_FILES, files, cwd)
+  testAndAddFile(CHANGELOG_FILES, files, cwd)
 
   return files.filter(isFile)
 }
@@ -131,14 +133,20 @@ const writePackage = (pkg, to) => {
   debug('package.json: %s', package_string)
 }
 
-// - pkg `gaia/package`
-const prepare = async pkg => {
+// - pkg: the return value of `gaia/package`
+const prepare = async ({
+  cwd,
+  pkg
+}) => {
   const dir = await getTempDir()
-  const files = await getFilesToPack(pkg)
+  const files = await getFilesToPack({
+    cwd,
+    protoPath: pkg.proto_path
+  })
 
   debug('files: %s', JSON.stringify(files, null, 2))
 
-  await copyFiles(pkg.root, dir, files)
+  await copyFiles(cwd, dir, files)
   writePackage(pkg, dir)
 
   return dir
@@ -155,13 +163,16 @@ const createPackName = pkg => {
   return `${normalizeName(name)}-${version}.tgz`
 }
 
-const packThen = command => async argv => {
-  const {
-    _,
+const packThen = command => async ({
+  // Extra args for npm
+  _,
+  cwd,
+  pkg
+}) => {
+  const dir = await await prepare({
+    cwd,
     pkg
-  } = argv
-
-  const dir = await await prepare(pkg)
+  })
 
   const args = [command].concat(_)
 

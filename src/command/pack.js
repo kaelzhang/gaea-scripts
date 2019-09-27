@@ -19,18 +19,26 @@ module.exports = class PackCommand extends Command {
   }
 
   async run ({
-    argv
+    argv: {
+      cwd,
+      pkg,
+      _
+    }
   }) {
     const {
       pack: {
         name,
         path
       }
-    } = await packThen('pack')(argv)
+    } = await packThen('pack')({
+      cwd,
+      pkg,
+      _
+    })
 
     await fse.copy(
       path,
-      join(argv.cwd, name)
+      join(cwd, name)
     )
   }
 }
