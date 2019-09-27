@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/kaelzhang/@gaia/cli.svg?branch=master)](https://travis-ci.org/kaelzhang/@gaia/cli)
-[![Coverage](https://codecov.io/gh/kaelzhang/@gaia/cli/branch/master/graph/badge.svg)](https://codecov.io/gh/kaelzhang/@gaia/cli)
+[![Build Status](https://travis-ci.org/kaelzhang/gaia-cli.svg?branch=master)](https://travis-ci.org/kaelzhang/gaia-cli)
+[![Coverage](https://codecov.io/gh/kaelzhang/gaia-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/kaelzhang/gaia-cli)
 <!-- optional appveyor tst
 [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kaelzhang/@gaia/cli?branch=master&svg=true)](https://ci.appveyor.com/project/kaelzhang/@gaia/cli)
 -->
@@ -15,18 +15,20 @@
 
 # gaia-cli
 
-<!-- description -->
+Development and deployment toolkit for gaia
 
 ## Install
 
 ```sh
-$ npm i gaia-cli
+$ npm i gaia-cli -D
 ```
 
 ## Usage
 
+#### Show gaia help
+
 ```sh
-> gaia start
+> gaia
 ```
 
 ## License
