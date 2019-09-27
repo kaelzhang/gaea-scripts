@@ -1,3 +1,4 @@
+const {join} = require('path')
 const {Server} = require('gaia')
 const dotenv = require('dotenv')
 
@@ -8,7 +9,7 @@ const start = ({
 }) => {
   if (dev) {
     dotenv.config({
-      path: cwd
+      path: join(cwd, '.env')
     })
   }
 
