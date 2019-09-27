@@ -13,6 +13,9 @@ E('CONFIG_NO_ACCESS', 'config file "%s" is not accessible')
 
 E('ERR_LOAD_CONFIG', 'fails to load config file "%s", reason:\n%s')
 
+E('NPM_SCRIPT_NOT_ALLOW',
+  '"%s" is not allowed to be executed inside "%s"')
+
 const throws = (...args) => {
   throw error(...args)
 }

@@ -2,9 +2,8 @@
   "name": "@gaia/cli",
   "version": "1.3.0",
   "description": "Command line toolkit for gaia",
-  "main": "./src",
   "bin": {
-    "gaia": "bin/index.js"
+    "gaia": "bin/gaia.js"
   },
   "scripts": {
     "test": "nyc ava --timeout=10s",

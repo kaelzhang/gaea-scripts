@@ -100,4 +100,4 @@ const create = gaiaConfigRequired => ({
   }
 })
 
-module.exports = OPTIONS
+module.exports = create

@@ -1,7 +1,10 @@
 const {Command} = require('bin-tool')
+const {join} = require('path')
 
 class Main extends Command {
   constructor () {
-    this.load()
+    super()
+
+    this.load(join(__dirname, 'command'))
   }
 }
