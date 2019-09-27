@@ -1,6 +1,6 @@
 {
   "name": "gaia-cli",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Command line toolkit for gaia",
   "bin": {
     "gaia": "bin/gaia.js"
@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@ostai/env": "^1.0.0",
-    "bin-tool": "^2.2.2",
+    "bin-tool": "^2.2.3",
     "chalk": "^2.4.2",
     "core-util-is": "^1.0.2",
     "dotenv": "^8.1.0",

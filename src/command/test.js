@@ -1,24 +1,20 @@
 // Start a gaia server
 
 const {Command} = require('bin-tool')
+const execa = require('execa')
 
 const create = require('../options')
 const {start} = require('../start')
 
-module.exports = class StartCommand extends Command {
+module.exports = class TestCommand extends Command {
   get description () {
-    return 'start as a gaia server'
+    return 'start the dev server and run tests'
   }
 
   constructor () {
     super()
 
-    this.options = create(true, {
-      dev: {
-        type: 'boolean',
-        description: 'whether start the server in dev mode'
-      }
-    })
+    this.options = create(true)
   }
 
   async run ({
@@ -30,14 +26,21 @@ module.exports = class StartCommand extends Command {
           ...config
         }
       },
-      dev
+      '--': commands
     }
   }) {
+    console.log(commands)
     await start({
       cwd,
       config,
       port,
-      dev
+      dev: true
+    })
+
+    const command = commands.shift()
+    await execa(command, commands, {
+      cwd,
+      stdio: 'inherit'
     })
   }
 }
