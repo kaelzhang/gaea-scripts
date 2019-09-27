@@ -4,10 +4,9 @@ const {glob} = require('glob-gitignore')
 const Ignore = require('ignore')
 const fse = require('fs-extra')
 const debug = require('util').debuglog('@gaia/cli')
+const execa = require('execa')
 
-const {
-  testFiles, getTempDir, spawn
-} = require('./util')
+const {testFiles, getTempDir} = require('./util')
 
 const IGNORE_FILES = [
   '.npmignore',
@@ -81,8 +80,8 @@ const testAndAddFile = (filesToTest, files, cwd) => {
 }
 
 const getFilesToPack = async pkg => {
-  const {root, protoPath} = pkg
-  const relProtoPath = relative(root, protoPath)
+  const {root, proto_path} = pkg
+  const relProtoPath = relative(root, proto_path)
 
   // `package.gaia.protos` is the entries of proto files but not all of them,
   // so we need to pack all proto files under protoPath
@@ -120,6 +119,8 @@ const writePackage = (pkg, to) => {
     dependencies[name] = cleaned.dependencies[name]
   }
 
+  cleaned.dependencies = dependencies
+
   const package_string = JSON.stringify(cleaned, null, 2)
 
   fs.writeFileSync(
@@ -143,9 +144,19 @@ const prepare = async pkg => {
   return dir
 }
 
+const normalizeName = name => name.replace(/^@/, '').replace(/\//, '-')
+
+const createPackName = pkg => {
+  const {
+    version,
+    name
+  } = pkg
+
+  return `${normalizeName(name)}-${version}.tgz`
+}
+
 const packThen = command => async argv => {
   const {
-    cwd,
     _,
     pkg
   } = argv
@@ -156,12 +167,19 @@ const packThen = command => async argv => {
 
   debug('npm %s', args.join(' '))
 
-  await spawn('npm', args, {cwd: dir})
+  await execa('npm', args, {
+    cwd: dir,
+    stdio: 'inherit'
+  })
+
+  const packName = createPackName(pkg.pkg)
 
   return {
-    pkg,
     dir,
-    cwd
+    pack: {
+      name: packName,
+      path: join(dir, packName)
+    }
   }
 }
 

@@ -35,21 +35,9 @@ const getTempDir = () => new Promise((resolve, reject) => {
   })
 })
 
-const normalizeName = name => name.replace(/^@/, '').replace(/\//, '-')
-
-const createPackName = pkg => {
-  const {
-    version,
-    name
-  } = pkg
-
-  return `${normalizeName(name)}-${version}.tgz`
-}
-
 module.exports = {
   log,
   accessible,
   testFiles,
-  getTempDir,
-  createPackName
+  getTempDir
 }

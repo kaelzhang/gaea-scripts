@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const {Command} = require('bin-tool')
+const fse = require('fs-extra')
+const {join} = require('path')
 
 const create = require('../options')
 const {packThen} = require('../prepare-pack')
@@ -16,9 +18,19 @@ module.exports = class PackCommand extends Command {
     this.options = create()
   }
 
-  run ({
+  async run ({
     argv
   }) {
-    return packThen('pack')(argv)
+    const {
+      pack: {
+        name,
+        path
+      }
+    } = await packThen('pack')(argv)
+
+    await fse.copy(
+      path,
+      join(argv.cwd, name)
+    )
   }
 }
