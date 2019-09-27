@@ -1,15 +1,14 @@
 
-const {isNumber} = require('core-util-is')
-const spawn = require('cross-spawn')
 const {format} = require('util')
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
 const tmp = require('tmp')
+
+const {error} = require('./error')
 
 const log = (...args) => console.log(format(...args))
 
-const accessible = file => {
+const accessible = filepath => {
   try {
     fs.accessSync(filepath, fs.constants.R_OK)
     return true
@@ -28,13 +27,15 @@ const getTempDir = () => new Promise((resolve, reject) => {
   tmp.dir((err, dir) => {
     if (err) {
       return reject(
-        error('fails to create tmp dir: %s', err.stack || err.message)
+        error('ERR_CREATE_TMP', err.stack)
       )
     }
 
     resolve(dir)
   })
 })
+
+const normalizeName = name => name.replace(/^@/, '').replace(/\//, '-')
 
 const createPackName = pkg => {
   const {

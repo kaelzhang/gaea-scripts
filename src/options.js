@@ -1,5 +1,4 @@
 const {join, resolve} = require('path')
-const {isString, isNumber} = require('core-util-is')
 const readGaiaPackage = require('gaia/package')
 
 const {accessible} = require('./util')
@@ -52,7 +51,7 @@ const create = gaiaConfigRequired => ({
     },
 
     set (cwd) {
-      return path.resolve(cwd)
+      return resolve(cwd)
     }
   },
 
@@ -84,6 +83,8 @@ const create = gaiaConfigRequired => ({
       if (!configFile) {
         return
       }
+
+      const {cwd} = this.parent
 
       configFile = resolve(cwd, configFile)
 

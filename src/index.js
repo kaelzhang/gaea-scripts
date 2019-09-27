@@ -2,7 +2,7 @@ const {
   start,
 } = require('./start')
 
-const config = require('./config')
+// const config = require('./config')
 
 module.exports = {
   start

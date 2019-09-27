@@ -1,10 +1,8 @@
-const fse = require('fs-extra')
-const {join} = require('path')
 const {Command} = require('bin-tool')
 
 const create = require('../options')
 const {packThen} = require('../prepare-pack')
-const {createPackName} = require('../src/util')
+const {prevent} = require('../prevent')
 
 module.exports = class PackCommand extends Command {
   get description () {

@@ -1,15 +1,13 @@
 const {relative, join} = require('path')
 const fs = require('fs')
-const {glob, hasMagic} = require('glob-gitignore')
+const {glob} = require('glob-gitignore')
 const Ignore = require('ignore')
 const fse = require('fs-extra')
-const {isArray} = require('core-util-is')
 const debug = require('util').debuglog('@gaia/cli')
 
 const {
-  testFiles, getTempDir, throws, spawn
+  testFiles, getTempDir, spawn
 } = require('./util')
-const config = require('./options')
 
 const IGNORE_FILES = [
   '.npmignore',
@@ -61,7 +59,7 @@ const getFilesByIgnore = (cwd, patterns) => {
   const ignore = Ignore().add(ALWAYS_IGNORES)
   const ignoreFile = testFiles(IGNORE_FILES, cwd)
   if (ignoreFile) {
-    ignore.add(fs.readFileSync(path.join(cwd, ignoreFile)).toString())
+    ignore.add(fs.readFileSync(join(cwd, ignoreFile)).toString())
   }
 
   return glob(patterns, {
@@ -145,7 +143,7 @@ const prepare = async pkg => {
   return dir
 }
 
-const packThen = async command => argv => {
+const packThen = command => async argv => {
   const {
     cwd,
     _,

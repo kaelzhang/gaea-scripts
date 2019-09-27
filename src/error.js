@@ -16,10 +16,13 @@ E('ERR_LOAD_CONFIG', 'fails to load config file "%s", reason:\n%s')
 E('NPM_SCRIPT_NOT_ALLOW',
   '"%s" is not allowed to be executed inside "%s"')
 
+E('ERR_CREATE_TMP', 'fails to create tmp dir, reason:\n%s')
+
 const throws = (...args) => {
   throw error(...args)
 }
 
 module.exports = {
-  throws
+  throws,
+  error
 }

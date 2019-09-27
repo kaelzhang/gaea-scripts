@@ -1,7 +1,7 @@
 const {Command} = require('bin-tool')
 const {join} = require('path')
 
-class Main extends Command {
+module.exports = class Main extends Command {
   constructor () {
     super()
 

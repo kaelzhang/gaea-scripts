@@ -13,20 +13,20 @@
 [![Dependency Status](https://david-dm.org/kaelzhang/@gaia/cli.svg)](https://david-dm.org/kaelzhang/@gaia/cli)
 -->
 
-# @gaia/cli
+# gaia-cli
 
 <!-- description -->
 
 ## Install
 
 ```sh
-$ npm i @gaia/cli
+$ npm i gaia-cli
 ```
 
 ## Usage
 
-```js
-import gaia_cli from '@gaia/cli'
+```sh
+> gaia start
 ```
 
 ## License
