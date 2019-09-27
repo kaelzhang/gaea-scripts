@@ -29,7 +29,6 @@ module.exports = class TestCommand extends Command {
       '--': commands
     }
   }) {
-    console.log(commands)
     await start({
       cwd,
       config,
@@ -40,7 +39,11 @@ module.exports = class TestCommand extends Command {
     const command = commands.shift()
     await execa(command, commands, {
       cwd,
-      stdio: 'inherit'
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        GAIA_SERVER_HOST: `localhost:${port}`
+      }
     })
   }
 }
