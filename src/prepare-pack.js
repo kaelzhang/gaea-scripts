@@ -165,7 +165,7 @@ const createPackName = pkg => {
 
 const packThen = command => async ({
   // Extra args for npm
-  _,
+  extraArgs,
   cwd,
   pkg
 }) => {
@@ -174,7 +174,7 @@ const packThen = command => async ({
     pkg
   })
 
-  const args = [command].concat(_)
+  const args = [command].concat(extraArgs)
 
   debug('npm %s', args.join(' '))
 

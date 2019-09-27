@@ -22,7 +22,7 @@ module.exports = class PackCommand extends Command {
     argv: {
       cwd,
       pkg,
-      _
+      '--': extraArgs
     }
   }) {
     const {
@@ -33,7 +33,7 @@ module.exports = class PackCommand extends Command {
     } = await packThen('pack')({
       cwd,
       pkg,
-      _
+      extraArgs
     })
 
     await fse.copy(

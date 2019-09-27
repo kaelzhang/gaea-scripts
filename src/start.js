@@ -1,21 +1,14 @@
-const {join} = require('path')
 const {Server} = require('gaia')
-const dotenv = require('dotenv')
-
 const {log} = require('./util')
 
 const start = ({
-  cwd, config, port, dev
+  cwd, config, port
 }) => {
-  if (dev) {
-    dotenv.config({
-      path: join(cwd, '.env')
-    })
-  }
-
-  new Server(cwd, config).listen(port)
+  const server = new Server(cwd, config).listen(port)
 
   log('server started at port %s', port)
+
+  return server
 }
 
 module.exports = {

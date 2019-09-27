@@ -1,49 +1,21 @@
 const {join, resolve} = require('path')
 const readGaiaPackage = require('gaia/package')
+const dotenv = require('dotenv')
 
 const {accessible} = require('./util')
 const {throws} = require('./error')
 
-// const GaiaConfig = shape({
-//   dev: shape({
-//     env: Object
-//   }),
-
-//   service: shape({
-//     root: {
-//       set (root, cwd) {
-//         if (!isString(root)) {
-//           throws(TypeError, 'service.root must be a path')
-//         }
-
-//         return path.resolve(cwd, root)
-//       }
-//     },
-
-//     port: {
-//       validate (port) {
-//         if (!isNumber(port)) {
-//           throws(TypeError, 'service.port must be a number')
-//         }
-
-//         return true
-//       }
-//     }
-//   }),
-
-//   docker: {
-//     optional: true,
-//     type: shape({
-//       name: {
-//         validate: isString
-//       }
-//     })
-//   }
-// })
-
 const GAIA_CONFIG = 'gaia.config.js'
 
-const create = (gaiaConfigRequired, extra = {}) => ({
+const create = ({
+  // run in dev
+  dev,
+  // whether gaia.config.js or --config is required
+  configRequired,
+  // extra options
+  extra = {}
+} = {}) => ({
+  ...extra,
   cwd: {
     description: 'set the current working directory, defaults to process.cwd()',
     default () {
@@ -51,6 +23,14 @@ const create = (gaiaConfigRequired, extra = {}) => ({
     },
 
     set (cwd) {
+      cwd = resolve(cwd)
+
+      if (dev || this.parent.dev) {
+        dotenv.config({
+          path: join(cwd, '.env')
+        })
+      }
+
       return resolve(cwd)
     }
   },
@@ -75,7 +55,7 @@ const create = (gaiaConfigRequired, extra = {}) => ({
         return configFile
       }
 
-      if (gaiaConfigRequired) {
+      if (configRequired) {
         throws('CONFIG_REQUIRED', cwd)
       }
     },

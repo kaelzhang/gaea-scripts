@@ -19,7 +19,7 @@ module.exports = class PackCommand extends Command {
     argv: {
       cwd,
       pkg,
-      _
+      '--': extraArgs
     }
   }) {
     prevent('gaia publish', ['run', 'publish'])
@@ -27,7 +27,7 @@ module.exports = class PackCommand extends Command {
     await packThen('publish')({
       cwd,
       pkg,
-      _
+      extraArgs
     })
   }
 }

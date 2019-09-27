@@ -13,10 +13,13 @@ module.exports = class StartCommand extends Command {
   constructor () {
     super()
 
-    this.options = create(true, {
-      dev: {
-        type: 'boolean',
-        description: 'whether start the server in dev mode'
+    this.options = create({
+      configRequired: true,
+      extra: {
+        dev: {
+          type: 'boolean',
+          description: 'whether start the server in dev mode'
+        }
       }
     })
   }
@@ -29,15 +32,13 @@ module.exports = class StartCommand extends Command {
           port,
           ...config
         }
-      },
-      dev
+      }
     }
   }) {
     await start({
       cwd,
       config,
-      port,
-      dev
+      port
     })
   }
 }

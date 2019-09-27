@@ -5,6 +5,7 @@ const execa = require('execa')
 
 const create = require('../options')
 const {start} = require('../start')
+const {log} = require('../util')
 
 module.exports = class TestCommand extends Command {
   get description () {
@@ -14,7 +15,10 @@ module.exports = class TestCommand extends Command {
   constructor () {
     super()
 
-    this.options = create(true)
+    this.options = create({
+      configRequired: true,
+      dev: true
+    })
   }
 
   async run ({
@@ -29,11 +33,10 @@ module.exports = class TestCommand extends Command {
       '--': commands
     }
   }) {
-    await start({
+    const server = await start({
       cwd,
       config,
-      port,
-      dev: true
+      port
     })
 
     const command = commands.shift()
@@ -45,5 +48,10 @@ module.exports = class TestCommand extends Command {
         GAIA_SERVER_HOST: `localhost:${port}`
       }
     })
+
+    await server.close()
+
+    log('server gracefully closed')
+    process.exit(0)
   }
 }
