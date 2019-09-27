@@ -1,15 +1,12 @@
-const path = require('path')
+const {relative, join} = require('path')
 const fs = require('fs')
-const {glob, hasMagic} = require('glob-gitignore')
+const {glob} = require('glob-gitignore')
 const Ignore = require('ignore')
 const fse = require('fs-extra')
-const {isArray} = require('core-util-is')
-const debug = require('util').debuglog('gaea-scripts')
+const debug = require('util').debuglog('@gaia/cli')
+const execa = require('execa')
 
-const {
-  testFiles, getTempDir, throws, spawn
-} = require('./util')
-const config = require('./config')
+const {testFiles, getTempDir} = require('./util')
 
 const IGNORE_FILES = [
   '.npmignore',
@@ -53,54 +50,18 @@ const ALWAYS_IGNORES = [
   'node_modules'
 ]
 
-const EMPTY = ''
-const GAEA = 'gaea'
 const REGEX_IS_DIR = /\/+$/
 
 const isFile = filepath => !REGEX_IS_DIR.test(filepath)
 
-const getFilesByFiles = async (files, cwd) => {
-  if (!isArray(files)) {
-    return throws('gaea.files must be an array')
-  }
-
-  const patterns = []
-  const found = []
-
-  files.forEach(file => {
-    if (hasMagic(file)) {
-      patterns.push(file)
-      return
-    }
-
-    if (REGEX_IS_DIR.test(file)) {
-      found.push(file.replace(REGEX_IS_DIR, EMPTY))
-      return
-    }
-
-    found.push(file)
-  })
-
-  if (!patterns.length) {
-    return found
-  }
-
-  const globbed = await glob(patterns, {
-    cwd,
-    marked: true
-  })
-
-  return found.concat(globbed)
-}
-
-const getFilesByIgnore = cwd => {
+const getFilesByIgnore = (cwd, patterns) => {
   const ignore = Ignore().add(ALWAYS_IGNORES)
   const ignoreFile = testFiles(IGNORE_FILES, cwd)
   if (ignoreFile) {
-    ignore.add(fs.readFileSync(path.join(cwd, ignoreFile)).toString())
+    ignore.add(fs.readFileSync(join(cwd, ignoreFile)).toString())
   }
 
-  return glob(['**'], {
+  return glob(patterns, {
     cwd,
     ignore,
     mark: true
@@ -118,108 +79,70 @@ const testAndAddFile = (filesToTest, files, cwd) => {
   }
 }
 
-const checkMain = (files, pkg, cwd) => {
-  const {main} = pkg
-  const filesToTest = []
+const getFilesToPack = async ({
+  cwd,
+  protoPath
+}) => {
+  const relProtoPath = relative(cwd, protoPath)
 
-  if (main) {
-    filesToTest.push(main)
-    filesToTest.push(`${main}.js`)
-  }
-
-  testAndAddFile(filesToTest, files, cwd)
-}
-
-const getFilesToPack = async (pkg, cwd) => {
-  const gaea = pkg.gaea || {}
-
-  const files = gaea.files
-    ? await getFilesByFiles(gaea.files, cwd)
-    : await getFilesByIgnore(cwd)
+  // `package.gaia.protos` is the entries of proto files but not all of them,
+  // so we need to pack all proto files under protoPath
+  const files = await getFilesByIgnore(cwd, `${relProtoPath}/**/*.proto`)
 
   testAndAddFile(README_FILES, files, cwd)
   testAndAddFile(LICENSE_FILES, files, cwd)
   testAndAddFile(CHANGELOG_FILES, files, cwd)
-
-  checkMain(files, pkg, cwd)
 
   return files.filter(isFile)
 }
 
 const copyFiles = (from, to, files) => {
   const tasks = files.map(file => fse.copy(
-    path.join(from, file),
-    path.join(to, file)
+    join(from, file),
+    join(to, file)
   ))
 
   return Promise.all(tasks)
 }
 
-const createDependencies = (
-  original_dependencies, gaea_dependencies
-) => {
-  const new_dependencies = {}
-
-  if (!(GAEA in original_dependencies)) {
-    return throws('gaea must be npm installed')
-  }
-
-  new_dependencies.gaea = original_dependencies.gaea
-
-  if (!gaea_dependencies) {
-    return new_dependencies
-  }
-
-  if (!isArray(gaea_dependencies)) {
-    return throws('gaea.dependencies must be an array')
-  }
-
-  gaea_dependencies.forEach(dep => {
-    if (dep === GAEA) {
-      return
-    }
-
-    if (!(dep in original_dependencies)) {
-      return throws('depencency "%s" is not in package.dependencies')
-    }
-
-    new_dependencies[dep] = original_dependencies[dep]
-  })
-
-  return gaea_dependencies
-}
-
 const writePackage = (pkg, to) => {
   const {
-    dependencies = {},
-    files,
-    gaea,
-    ...cleaned
+    proto_dependencies,
+    pkg: packageJson
   } = pkg
 
-  cleaned.dependencies = createDependencies(dependencies, gaea.dependencies)
-
-  if (gaea.files) {
-    cleaned.files = gaea.files
+  const cleaned = {
+    ...packageJson
   }
+
+  const dependencies = {}
+
+  for (const name of proto_dependencies) {
+    dependencies[name] = cleaned.dependencies[name]
+  }
+
+  cleaned.dependencies = dependencies
 
   const package_string = JSON.stringify(cleaned, null, 2)
 
   fs.writeFileSync(
-    path.join(to, 'package.json'),
+    join(to, 'package.json'),
     package_string
   )
 
   debug('package.json: %s', package_string)
 }
 
-
+// - pkg: the return value of `gaia/package`
 const prepare = async ({
   cwd,
   pkg
 }) => {
   const dir = await getTempDir()
-  const files = await getFilesToPack(pkg, cwd)
+  const files = await getFilesToPack({
+    cwd,
+    protoPath: pkg.proto_path
+  })
 
   debug('files: %s', JSON.stringify(files, null, 2))
 
@@ -229,31 +152,45 @@ const prepare = async ({
   return dir
 }
 
-const packThen = async command => {
-  const {
-    argv: {
-      _
-    },
-    config: {
-      cwd,
-      pkg
-    }
-  } = await config.get(false)
+const normalizeName = name => name.replace(/^@/, '').replace(/\//, '-')
 
+const createPackName = pkg => {
+  const {
+    version,
+    name
+  } = pkg
+
+  return `${normalizeName(name)}-${version}.tgz`
+}
+
+const packThen = command => async ({
+  // Extra args for npm
+  _,
+  cwd,
+  pkg
+}) => {
   const dir = await await prepare({
-    cwd, pkg
+    cwd,
+    pkg
   })
 
   const args = [command].concat(_)
 
   debug('npm %s', args.join(' '))
 
-  await spawn('npm', args, {cwd: dir})
+  await execa('npm', args, {
+    cwd: dir,
+    stdio: 'inherit'
+  })
+
+  const packName = createPackName(pkg.pkg)
 
   return {
-    pkg,
     dir,
-    cwd
+    pack: {
+      name: packName,
+      path: join(dir, packName)
+    }
   }
 }
 

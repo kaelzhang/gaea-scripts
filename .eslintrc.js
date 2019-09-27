@@ -1,5 +1,5 @@
 module.exports = {
-  extends: require.resolve('eslint-config-ostai'),
+  extends: require.resolve('@ostai/eslint-config'),
   rules: {
     'no-console': 'off',
     'global-require': 'off',

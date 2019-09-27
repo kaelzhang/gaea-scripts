@@ -1,19 +1,13 @@
 {
-  "name": "gaea-scripts",
-  "version": "1.3.0",
-  "description": "Command line toolkit for gaea",
-  "main": "index.js",
+  "name": "gaia-cli",
+  "version": "2.0.0",
+  "description": "Command line toolkit for gaia",
   "bin": {
-    "gaea-publish": "bin/publish.js",
-    "gaea-dev": "bin/dev.js",
-    "gaea-start": "bin/start.js",
-    "gaea-pack": "bin/pack.js",
-    "gaea-docker": "bin/docker.js",
-    "gaea-test": "bin/test.js"
+    "gaia": "bin/gaia.js"
   },
   "scripts": {
     "test": "nyc ava --timeout=10s",
-    "test-no-report": "NODE_DEBUG=gaea-scripts nyc ava --timeout=10s --verbose",
+    "test-no-report": "NODE_DEBUG=@gaia/cli nyc ava --timeout=10s --verbose",
     "lint": "eslint .",
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
@@ -23,11 +17,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/kaelzhang/gaea-scripts.git"
+    "url": "git://github.com/kaelzhang/@gaia/cli.git"
   },
   "keywords": [
-    "gaea-scripts",
-    "gaea"
+    "@gaia/cli",
+    "gaia-cli",
+    "gaia"
   ],
   "engines": {
     "node": ">= 6"
@@ -38,27 +33,29 @@
   "author": "kaelzhang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kaelzhang/gaea-scripts/issues"
+    "url": "https://github.com/kaelzhang/@gaia/cli/issues"
   },
   "devDependencies": {
-    "ava": ">= 1.0.0-beta.6",
-    "codecov": "^3.0.2",
-    "nyc": "^12.0.2",
-    "eslint-config-ostai": "^1.1.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint": "^5.1.0"
+    "@ostai/eslint-config": "^3.5.0",
+    "ava": "^2.4.0",
+    "codecov": "^3.6.1",
+    "eslint": "^6.4.0",
+    "eslint-plugin-import": "^2.18.2",
+    "nyc": "^14.1.1"
   },
   "dependencies": {
     "@ostai/env": "^1.0.0",
-    "chalk": "^2.4.1",
+    "bin-tool": "^2.2.3",
+    "chalk": "^2.4.2",
     "core-util-is": "^1.0.2",
-    "cross-spawn": "^6.0.5",
-    "fs-extra": "^7.0.0",
-    "glob-gitignore": "^1.0.10",
-    "ignore": "^5.0.2",
-    "minimist": "^1.2.0",
-    "once": "^1.4.0",
-    "skema": "^9.3.7",
-    "tmp": "0.0.33"
+    "dotenv": "^8.1.0",
+    "err-object": "^5.1.4",
+    "execa": "^2.0.4",
+    "fs-extra": "^8.1.0",
+    "gaia": "^2.0.2",
+    "glob-gitignore": "^1.0.14",
+    "ignore": "^5.1.4",
+    "skema": "^9.5.1",
+    "tmp": "0.1.0"
   }
 }

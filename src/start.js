@@ -1,30 +1,23 @@
-const {log} = require('./util')
-const config = require('./config')
+const {join} = require('path')
+const {Server} = require('gaia')
+const dotenv = require('dotenv')
 
-const start = (gaea, gaeaConfig, dev) => {
+const {log} = require('./util')
+
+const start = ({
+  cwd, config, port, dev
+}) => {
   if (dev) {
-    Object.assign(process.env, gaeaConfig.dev.env)
+    dotenv.config({
+      path: join(cwd, '.env')
+    })
   }
 
-  const {
-    port,
-    root
-  } = gaeaConfig.service
+  new Server(cwd, config).listen(port)
 
   log('server started at port %s', port)
-
-  gaea.server(root).listen(port)
-}
-
-const startDevAt = async (g, cwd) => {
-  const {
-    gaea
-  } = await config.config({cwd}, true)
-
-  start(g, gaea, true)
 }
 
 module.exports = {
-  start,
-  startDevAt
+  start
 }

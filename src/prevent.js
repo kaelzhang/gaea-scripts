@@ -1,8 +1,5 @@
 // Prevent certain npm commands
-
-const {
-  fail
-} = require('./util')
+const {throws} = require('./error')
 
 const npm_commands = process.env.npm_config_argv
   ? JSON.parse(process.env.npm_config_argv).original
@@ -20,9 +17,7 @@ const prevent = (command, not_allow) => {
   }
 
   const npm_command = not_allow.join(' ')
-  const message = `"${command}" is not allowed to be executed inside "${npm_command}"`
-
-  fail(new Error(message))
+  throws('NPM_SCRIPT_NOT_ALLOW', command, npm_command)
 }
 
 module.exports = {
