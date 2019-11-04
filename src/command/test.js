@@ -25,10 +25,8 @@ module.exports = class TestCommand extends Command {
     argv: {
       cwd,
       config: {
-        service: {
-          port,
-          ...config
-        }
+        server: config,
+        port
       },
       '--': commands
     }

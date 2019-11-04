@@ -31,6 +31,43 @@ $ npm i gaia-cli -D
 > gaia
 ```
 
+### gaia.config.js
+
+`gaia` should locate in the repo's root directory should contains, and it defines the configurations used by gaia-cli
+
+`gaia.config.js` contains:
+
+- A `server` field which is the second argument for `new gaia.Server(root, config)`
+- A `port` field which defines the port the server will listen to
+
+Field `server` and field `port` are required by command `gaia start`
+
+## Commands
+
+### gaia start
+
+Start the gaia server
+
+```sh
+gaia start
+
+gaia start --dev
+```
+
+**options**
+
+- **--dev** whether start the server in dev mode. If `true`, gaia cli will populate the env variables from .env file by using [`dotenv`](https://npmjs.org/package/dotenv)
+
+### gaia test -- [test-command]
+
+Start a dev server for the current project and then run the test command.
+
+`gaia test` will handle the server starting and closing, so you need not to start a gaia server in test specs. Just create gaia clients in your test cases.
+
+```sh
+gaia test -- nyc ava test/*.js
+```
+
 ## License
 
 MIT
