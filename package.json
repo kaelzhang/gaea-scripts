@@ -1,6 +1,6 @@
 {
   "name": "gaia-cli",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Command line toolkit for gaia",
   "bin": {
     "gaia": "bin/gaia.js"
@@ -52,7 +52,7 @@
     "err-object": "^5.1.4",
     "execa": "^2.0.4",
     "fs-extra": "^8.1.0",
-    "gaia": "^3.0.0",
+    "gaia": "^3.0.2",
     "glob-gitignore": "^1.0.14",
     "ignore": "^5.1.4",
     "skema": "^9.5.1",
